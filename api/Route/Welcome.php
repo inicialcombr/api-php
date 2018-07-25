@@ -3,7 +3,7 @@
 /**
  * Welcome API
  */
-$app->route('/welcome', function($request, $response) {
+$app->route('/welcome/', function($request, $response) {
 
 	try {
 
@@ -14,16 +14,15 @@ $app->route('/welcome', function($request, $response) {
 			'welcome_message'  => "Welcome, {$name}!",
 		);
 
-		$response->setData   ($data);
-		$response->setStatus (true);
-		$response->setMessage('Success!');
+		$response->setData($data);
 
 	} catch (Exception $data) {
 
 		$response->setData   ($data);
 		$response->setStatus (false);
+		$response->setCode   (400);
 		$response->setMessage($data->getMessage());
 	}
 
-	$response->send();
+	$response->json();
 });

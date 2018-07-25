@@ -20,8 +20,8 @@ $app->route('/', function($request, $response) {
 		'version' => Settings::VERSION
 	);
 
-	$response->setData	 ($data);
-	$response->setStatus (true);
-	$response->setMessage('Response message!');
-	$response->send();
+	$response->setData	($data);
+	$response->setStatus(false);
+	$response->setCode  (400);
+	$response->json();
 });
