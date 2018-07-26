@@ -58,15 +58,23 @@ class App
 	}
 
 	/**
+	 * @param  string $method (GET, POST, PUT, DELETE)
 	 * @param  string $route
 	 * @param  function $callback
 	 * @return mixed
 	 */
-	public function route($route, $callback)
+	public function route($method, $route, $callback)
 	{
+		$request  = new Request();
+		$response = new Response();
+
+		if (!empty($method) && !in_array(strtoupper($method), array('ALL', $request->getParam('REQUEST_METHOD', 'SERVER')))) {
+			return false;
+		}
+
 		if (strpos($this->__routeUri, $route) === 0) {
 			if (is_callable($callback)) {
-				return $callback(new Request(), new Response());
+				return $callback($request, $response);
 			}
 		}
 	}

@@ -14,7 +14,7 @@ $app->load('Route/');
 /**
  * Index / Fallback API
  */
-$app->route('/', function($request, $response) {
+$app->route('ALL', '/', function($request, $response) {
 
 	$data = array (
 		'version' => Settings::VERSION

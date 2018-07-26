@@ -3,7 +3,7 @@
 /**
  * Welcome API
  */
-$app->route('/welcome/', function($request, $response) {
+$app->route('GET', '/welcome/', function($request, $response) {
 
 	try {
 
@@ -13,7 +13,7 @@ $app->route('/welcome/', function($request, $response) {
 		$name = !$name ? 'friend' : $name;
 
 		$data = array (
-			'welcome_message'  => "Welcome, {$name}!",
+			'welcome_message'  => "Welcome, {$name}!"
 		);
 
 		$response->setData($data);
