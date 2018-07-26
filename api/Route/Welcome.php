@@ -7,6 +7,8 @@ $app->route('/welcome/', function($request, $response) {
 
 	try {
 
+		// throw new Exception("Error Processing Request", 1);
+
 		$name = $request->getParam('name');
 		$name = !$name ? 'friend' : $name;
 
@@ -18,10 +20,9 @@ $app->route('/welcome/', function($request, $response) {
 
 	} catch (Exception $data) {
 
-		$response->setData   ($data);
-		$response->setStatus (false);
-		$response->setCode   (400);
-		$response->setMessage($data->getMessage());
+		$response->setSuccess (false);
+		$response->setMessage ($data->getMessage());
+		$response->setHttpCode(400);
 	}
 
 	$response->json();

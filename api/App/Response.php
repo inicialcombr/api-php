@@ -18,12 +18,7 @@ class Response
 	/**
 	 * @var boolean
 	 */
-	private $__status;
-
-	/**
-	 * @var int
-	 */
-	private $__code;
+	private $__success;
 
 	/**
 	 * @var string
@@ -31,16 +26,28 @@ class Response
 	private $__message;
 
 	/**
+	 * @var int
+	 */
+	private $__httpCode;
+
+	/**
+	 * @var int
+	 */
+	private $__httpMessage;
+
+	/**
 	 * @param mixed   $data
-	 * @param boolean $status
+	 * @param boolean $success
+	 * @param string  $message
+	 * @param int     $httpCode
 	 * @return Api\Response
 	 */
-	public function __construct($data = null, $status = true, $code = 200, $message = null)
+	public function __construct($data = null, $success = true, $message = null, $httpCode = 200)
 	{
-		$this->setData   ($data);
-		$this->setMessage($message);
-		$this->setStatus ($status);
-		$this->setCode   ($code);
+		$this->setData    ($data);
+		$this->setSuccess ($success);
+		$this->setMessage ($message);
+		$this->setHttpCode($httpCode);
 
 		return $this;
 	}
@@ -57,12 +64,23 @@ class Response
 	}
 
 	/**
-	 * @param bool $status
+	 * @param bool $success
 	 * @return Api\Response
 	 */
-	public function setStatus($status)
+	public function setSuccess($success)
 	{
-		$this->__status = (bool) $status;
+		$this->__success = (bool) $success;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $message
+	 * @return Api\Response
+	 */
+	public function setMessage($message)
+	{
+		$this->__message = (string) $message;
 
 		return $this;
 	}
@@ -71,11 +89,12 @@ class Response
 	 * @param int $code
 	 * @return Api\Response
 	 */
-	public function setCode($code)
+	public function setHttpCode($code)
 	{
-		$this->__code = (int) $code;
+		$this->__httpCode = (int) $code;
 
-		switch ($code) {
+		switch ($code)
+		{
             case 100: $message = 'Continue'; break;
             case 101: $message = 'Switching Protocols'; break;
             case 200: $message = 'OK'; break;
@@ -114,24 +133,11 @@ class Response
             case 504: $message = 'Gateway Time-out'; break;
             case 505: $message = 'HTTP Version not supported'; break;
             default:
-                $message = 'Unknown http status code "' . htmlentities($code) . '"';
+                $message = "Unknown http status code {$code}";
             break;
         }
 
-        if (empty($this->__message)) {
-        	$this->__message = $message;
-        }
-
-		return $this;
-	}
-
-	/**
-	 * @param string $message
-	 * @return Api\Response
-	 */
-	public function setMessage($message)
-	{
-		$this->__message = (string) $message;
+        $this->__httpMessage = $message;
 
 		return $this;
 	}
@@ -142,7 +148,7 @@ class Response
 	 */
 	public function setHeader($name, $value)
 	{
-		header("{$name}:{$value}");
+		header("{$name}:{$value}", true, $this->__httpCode);
 	}
 
 	/**
@@ -155,11 +161,14 @@ class Response
 		$this->setHeader('Content-Type', 'application/json');
 
 		print json_encode(array(
-			'data'    => $this->__data,
-			'status'  => array (
-				'success' => $this->__status,
-				'code'	  => $this->__code,
+			'data' => $this->__data,
+			'status' => array (
+				'success' => $this->__success,
 				'message' => $this->__message,
+				'http' => array (
+					'code' => $this->__httpCode,
+					'message' => $this->__httpMessage
+				)
 			)
 		));
 
